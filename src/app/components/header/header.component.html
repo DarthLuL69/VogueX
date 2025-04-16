@@ -1,0 +1,81 @@
+<!-- Desktop Header -->
+<header class="border-b border-gray-300 hidden md:block">
+  <div class="container mx-auto flex items-center justify-between py-4 px-6">
+    <!-- Logo -->
+    <div class="w-24 h-8 bg-black flex items-center justify-center text-white font-bold">
+      <a href="/" class="text-white">VogueX</a>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="flex items-center border border-gray-400 rounded-md">
+      <input class="px-4 py-2 w-64 focus:outline-none" placeholder="Search..." type="text"/>
+      <button class="px-4">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    
+    <!-- Navigation Links -->
+    <div class="flex items-center space-x-6">
+      <a href="/sell" class="border border-black px-4 py-2 hover:bg-black hover:text-white transition duration-300">
+        SELL
+      </a>
+      <a class="hover:underline" href="/shop">
+        SHOP
+      </a>
+      <a class="hover:underline" href="/contact">
+        CONTACT
+      </a>
+      <i class="far fa-heart"></i>
+      <div class="w-6 h-6 bg-black rounded-full"></div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="border-b border-gray-300">
+    <div class="container mx-auto flex justify-center space-x-8 py-2">
+      @for (category of categories; track category.name) {
+        <a class="hover:underline" href="{{ category.link }}">
+          {{ category.name.toUpperCase() }}
+        </a>
+      }
+    </div>
+  </nav>
+</header>
+
+<!-- Mobile Header -->
+<header class="bg-black text-white md:hidden">
+  <div class="flex items-center justify-between px-4 py-3">
+    <div class="w-12 h-12 bg-black flex items-center justify-center">
+      <a href="/" class="text-white font-bold">VogueX</a>
+    </div>
+    <div class="flex items-center space-x-2">
+      <input class="px-2 py-1 border border-gray-300 rounded text-black text-sm" placeholder="Search..." type="text"/>
+      <button class="text-black bg-white px-2 py-1 border border-gray-300">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <div>
+      <button (click)="toggleMobileMenu()" aria-label="Toggle menu">
+        <i class="fas fa-ellipsis-h text-white text-lg"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile Navigation Menu -->
+  <nav *ngIf="mobileMenuOpen" class="bg-gray-900 py-2">
+    <div class="container px-4">
+      <ul class="space-y-2">
+        @for (category of categories; track category.name) {
+          <li>
+            <a class="block text-white py-1" href="{{ category.link }}">
+              {{ category.name.toUpperCase() }}
+            </a>
+          </li>
+        }
+        <li><a class="block text-white py-1" href="/sell">SELL</a></li>
+        <li><a class="block text-white py-1" href="/shop">SHOP</a></li>
+        <li><a class="block text-white py-1" href="/contact">CONTACT</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
