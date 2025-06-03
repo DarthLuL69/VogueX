@@ -1,27 +1,7 @@
 <div class="min-h-screen flex flex-col">
   <app-header></app-header>
-  <main>
-    <app-hero-carousel></app-hero-carousel>
-    
-    <!-- Mobile view only shows the carousels, desktop view shows product grids -->
-    <div class="md:hidden">
-      <app-category-carousel 
-        title="MENSWEAR" 
-        [items]="menswearItems">
-      </app-category-carousel>
-      
-      <app-category-carousel 
-        title="WOMENSWEAR" 
-        [items]="womenswearItems">
-      </app-category-carousel>
-    </div>
-    
-    <div class="hidden md:block">
-      <app-product-grid title="MENSWEAR"></app-product-grid>
-      <app-product-grid title="WOMENSWEAR"></app-product-grid>
-    </div>
+  <main class="flex-grow">
+    <router-outlet></router-outlet>
   </main>
   <app-footer></app-footer>
 </div>
-
-<router-outlet></router-outlet>
