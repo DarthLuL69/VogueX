@@ -1,0 +1,29 @@
+<div class="products-container">
+  <div *ngFor="let product of products" class="product-card">
+    <img [src]="product.imageUrl" [alt]="product.name" />
+    
+    <h2>{{ product.name }}</h2>
+    
+    <p>{{ product.description }}</p>
+    
+    <div class="price-favorite">
+      <span class="price">${{ product.price }}</span>
+      <button
+        class="favorite-btn"
+        (click)="toggleFavorite(product)"
+        [class.favorited]="isFavorite(product)"
+        aria-label="Toggle favorite"
+        type="button"
+      >
+        <i class="fas" [ngClass]="{'fa-heart': isFavorite(product), 'fa-regular fa-heart': !isFavorite(product)}"></i>
+      </button>
+    </div>
+    
+    <p class="listed-time">{{ getTimeListed(product.listedDate) }}</p>
+    
+    <div class="buttons">
+      <button (click)="onPriceDrop(product)">Price Drop</button>
+      <button (click)="onSendOffer(product)">Send Offer</button>
+    </div>
+  </div>
+</div>
