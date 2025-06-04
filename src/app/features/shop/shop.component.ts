@@ -10,139 +10,197 @@ import { HttpClientModule } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, RouterModule, HttpClientModule],
   template: `
-    <div class="container mx-auto px-4 py-8">
-      <h1 class="text-3xl font-bold mb-8">Tienda</h1>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="shop-container">
+      <h1 class="page-title">Tienda</h1>
+      <div class="content-container">
         <!-- Filtros -->
-        <aside class="md:col-span-1 space-y-6">
+        <aside class="filter-sidebar">
 
           <!-- Department Filter -->
-          <div class="bg-gray-200 p-4 rounded-lg">
-            <h3 class="font-semibold mb-2">Departament</h3>
-            <ul class="space-y-1">
-              <li><label><input type="checkbox" class="mr-2"> Menswear</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Womenswear</label></li>
-            </ul>
+          <div class="filter-section">
+            <h3 class="filter-title" (click)="toggleFilter('department')">
+              Departament
+              <svg class="arrow-icon" [class.expanded]="isFilterExpanded('department')" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </h3>
+            <div class="filter-options" *ngIf="isFilterExpanded('department')">
+              <div class="checkbox-option">
+                <label><input type="checkbox"> Menswear</label>
+              </div>
+              <div class="checkbox-option">
+                <label><input type="checkbox"> Womenswear</label>
+              </div>
+            </div>
           </div>
 
           <!-- Category Filter -->
-          <div class="bg-gray-200 p-4 rounded-lg">
-            <h3 class="font-semibold mb-2">Category</h3>
-            <ul class="space-y-1">
-              <li class="font-bold mt-2">Menswear</li>
-              <li><label><input type="checkbox" class="mr-2"> All Tops</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Long Sleeve T-Shirts</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Hoodies</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Shirts (Button Ups)</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Short Sleeve T-Shirts</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Sweaters & Knitwear</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></li>
-              <li class="font-bold mt-2">Bottoms</li>
-              <li class="font-bold mt-2">Outerwear</li>
-              <li class="font-bold mt-2">Footwear</li>
-              <li class="font-bold mt-2">Tailoring</li>
-              <li><label><input type="checkbox" class="mr-2"> All Tops</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Long Sleeve T-Shirts</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Hoodies</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Shirts (Button Ups)</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Short Sleeve T-Shirts</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Sweaters & Knitwear</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></li>
-              <li><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></li>
-              <li class="font-bold mt-2">Bottoms</li>
-              <li class="font-bold mt-2">Outerwear</li>
-              <li class="font-bold mt-2">Dresses</li>
-              <li class="font-bold mt-2">Footwear</li>
-              <li class="font-bold mt-2">Accessories</li>
-              <li class="font-bold mt-2">Bags & luggage</li>
-              <li><label><input type="checkbox" class="mr-2"> Jewelry</label></li>
-            </ul>
+          <div class="filter-section">
+            <h3 class="filter-title" (click)="toggleFilter('category')">
+              Category
+              <svg class="arrow-icon" [class.expanded]="isFilterExpanded('category')" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </h3>
+            <div class="filter-options" *ngIf="isFilterExpanded('category')">
+              <!-- Aquí podrías iterar sobre tus categorías dinámicamente -->
+              <div class="category-group">
+                <p class="category-group-title">Menswear</p>
+                <div class="checkbox-option"><label><input type="checkbox"> All Tops</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> Long Sleeve T-Shirts</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> Hoodies</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> Shirts (Button Ups)</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> Short Sleeve T-Shirts</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> Sweaters & Knitwear</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> Sweatshirts & Hoodies</label></div>
+              </div>
+               <div class="category-group">
+                <p class="category-group-title">Womenswear</p>
+                 <div class="checkbox-option"><label><input type="checkbox"> Dresses</label></div>
+              </div>
+              <!-- Los items actuales del template -->
+               <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> All Tops</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Long Sleeve T-Shirts</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Hoodies</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Shirts (Button Ups)</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Short Sleeve T-Shirts</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Sweaters & Knitwear</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></div>
+              <div class="category-group-title">Bottoms</div>
+              <div class="category-group-title">Outerwear</div>
+              <div class="category-group-title">Footwear</div>
+              <div class="category-group-title">Tailoring</div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> All Tops</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Long Sleeve T-Shirts</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Hoodies</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Shirts (Button Ups)</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Short Sleeve T-Shirts</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Sweaters & Knitwear</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Sweatshirts & Hoodies</label></div>
+              <div class="category-group-title">Bottoms</div>
+              <div class="category-group-title">Outerwear</div>
+              <div class="category-group-title">Dresses</div>
+              <div class="category-group-title">Footwear</div>
+              <div class="category-group-title">Accessories</div>
+              <div class="category-group-title">Bags & luggage</div>
+              <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Jewelry</label></div>
+            </div>
           </div>
 
           <!-- Size Filter -->
-          <div class="bg-gray-200 p-4 rounded-lg">
-            <h3 class="font-semibold mb-2">Size</h3>
-            <ul class="space-y-1">
-               <li class="font-bold mt-2">Menswear</li>
-               <li class="font-bold mt-2">Tops</li>
-              <li><label><input type="checkbox" class="mr-2"> XXS/40</label></li>
-              <li><label><input type="checkbox" class="mr-2"> XS/42</label></li>
-              <li><label><input type="checkbox" class="mr-2"> S/44-46</label></li>
-              <li><label><input type="checkbox" class="mr-2"> M/48-50</label></li>
-              <li><label><input type="checkbox" class="mr-2"> L/52-54</label></li>
-              <li><label><input type="checkbox" class="mr-2"> XL/56</label></li>
-              <li><label><input type="checkbox" class="mr-2"> XXL/58</label></li>
-               <li class="font-bold mt-2">Bottoms</li>
-               <li class="font-bold mt-2">Outerwear</li>
-               <li class="font-bold mt-2">Footwear</li>
-               <li class="font-bold mt-2">Tailoring</li>
-               <li class="font-bold mt-2">Accessories</li>
-               <li class="font-bold mt-2">Womenswear</li>
-               <li class="font-bold mt-2">Tops</li>
-               <li class="font-bold mt-2">Bottoms</li>
-               <li class="font-bold mt-2">Outerwear</li>
-               <li class="font-bold mt-2">Dresses</li>
-               <li class="font-bold mt-2">Footwear</li>
-               <li class="font-bold mt-2">Accessories</li>
-               <li class="font-bold mt-2">Bags & luggage</li>
-               <li><label><input type="checkbox" class="mr-2"> Jewelry</label></li>
-            </ul>
+           <div class="filter-section">
+            <h3 class="filter-title" (click)="toggleFilter('size')">
+              Size
+              <svg class="arrow-icon" [class.expanded]="isFilterExpanded('size')" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </h3>
+            <div class="filter-options" *ngIf="isFilterExpanded('size')">
+               <!-- Aquí podrías iterar sobre tus tallas dinámicamente -->
+               <div class="category-group">
+                 <p class="category-group-title">Menswear</p>
+                 <p class="category-group-title">Tops</p>
+                <div class="checkbox-option"><label><input type="checkbox"> XXS/40</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> XS/42</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> S/44-46</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> M/48-50</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> L/52-54</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> XL/56</label></div>
+                <div class="checkbox-option"><label><input type="checkbox"> XXL/58</label></div>
+               </div>
+                <!-- Los items actuales del template -->
+                <div class="category-group-title">Menswear</div>
+                 <div class="category-group-title">Tops</div>
+                <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> XXS/40</label></div>
+                <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> XS/42</label></div>
+                <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> S/44-46</label></div>
+                <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> M/48-50</label></div>
+                <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> L/52-54</label></div>
+                <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> XL/56</label></div>
+                <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> XXL/58</label></div>
+                 <div class="category-group-title">Bottoms</div>
+                 <div class="category-group-title">Outerwear</div>
+                 <div class="category-group-title">Footwear</div>
+                 <div class="category-group-title">Tailoring</div>
+                 <div class="category-group-title">Accessories</div>
+                 <div class="category-group-title">Womenswear</div>
+                 <div class="category-group-title">Tops</div>
+                 <div class="category-group-title">Bottoms</div>
+                 <div class="category-group-title">Outerwear</div>
+                 <div class="category-group-title">Dresses</div>
+                 <div class="category-group-title">Footwear</div>
+                 <div class="category-group-title">Accessories</div>
+                 <div class="category-group-title">Bags & luggage</div>
+                 <div class="checkbox-option"><label><input type="checkbox" class="mr-2"> Jewelry</label></div>
+            </div>
           </div>
 
           <!-- Designers Filter -->
-          <div class="bg-gray-200 p-4 rounded-lg">
-            <h3 class="font-semibold mb-2">Designers</h3>
-             <div class="relative mb-2">
-               <input type="text" placeholder="Search for designers..." class="w-full border border-gray-300 rounded px-2 py-1 text-sm">
-               <svg class="w-4 h-4 text-gray-500 absolute right-2 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-3.5-3.5M10 17a7 7 0 100-14 7 7 0 000 14z"></path></svg>
+          <div class="filter-section">
+            <h3 class="filter-title" (click)="toggleFilter('designers')">
+              Designers
+              <svg class="arrow-icon" [class.expanded]="isFilterExpanded('designers')" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </h3>
+            <div class="filter-options" *ngIf="isFilterExpanded('designers')">
+             <div class="filter-search">
+               <input type="text" placeholder="Search for designers..." class="search-input">
+               <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-3.5-3.5M10 17a7 7 0 100-14 7 7 0 000 14z"></path></svg>
              </div>
-            <ul class="space-y-1 text-sm">
-              <li *ngFor="let designer of designers"><label><input type="checkbox" class="mr-2"> {{ designer }}</label></li>
+            <ul class="designer-list">
+              <li *ngFor="let designer of designers"><label><input type="checkbox"> {{ designer }}</label></li>
             </ul>
+            </div>
           </div>
 
           <!-- Price Filter -->
-          <div class="bg-gray-200 p-4 rounded-lg">
-            <h3 class="font-semibold mb-2">Price</h3>
-            <div class="flex space-x-2">
-              <input type="text" placeholder="€ Min" class="w-1/2 border border-gray-300 rounded px-2 py-1 text-sm">
-              <input type="text" placeholder="€ Max" class="w-1/2 border border-gray-300 rounded px-2 py-1 text-sm">
+          <div class="filter-section">
+            <h3 class="filter-title" (click)="toggleFilter('price')">
+              Price
+              <svg class="arrow-icon" [class.expanded]="isFilterExpanded('price')" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </h3>
+             <div class="filter-options" *ngIf="isFilterExpanded('price')">
+                <div class="price-inputs">
+                  <input type="text" placeholder="€ Min" class="price-input">
+                  <input type="text" placeholder="€ Max" class="price-input">
+                </div>
             </div>
           </div>
 
         </aside>
-        
+
         <!-- Lista de productos -->
-        <div class="md:col-span-3">
-          <div *ngIf="products.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="product-list">
+          <div *ngIf="products.length > 0" class="product-grid">
             <!-- Productos de ejemplo -->
-            <div *ngFor="let product of products" class="bg-white rounded-lg shadow overflow-hidden cursor-pointer">
-              <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-64 object-cover">
-              <div class="p-3">
-                <p class="text-xs text-gray-500">{{ product.timeAgo || '' }}</p>
-                <h3 class="font-semibold text-sm mb-1">{{ product.name }}</h3>
-                <div class="flex items-center justify-between">
-                  <p class="text-sm font-bold">€{{ product.price }} <span *ngIf="product.originalPrice" class="text-xs text-gray-500 line-through">€{{ product.originalPrice }}</span></p>
-                   <svg (click)="toggleFavorite(product)" [class.text-red-500]="isFavorite(product.id)" class="w-4 h-4 text-gray-400 hover:text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <div *ngFor="let product of products" class="product-item">
+              <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
+              <div class="product-info">
+                <p class="product-time">{{ product.timeAgo || '' }}</p>
+                <h3 class="product-name">{{ product.name }}</h3>
+                <div class="product-details">
+                  <p class="product-price">€{{ product.price }} <span *ngIf="product.originalPrice" class="original-price">€{{ product.originalPrice }}</span></p>
+                   <svg (click)="toggleFavorite(product)" [class.text-red-500]="isFavorite(product.id)" class="favorite-icon" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
                   </svg>
                 </div>
               </div>
             </div>
           </div>
-           <div *ngIf="products.length === 0" class="col-span-full text-center text-gray-500">
+           <div *ngIf="products.length === 0" class="no-products">
               No se encontraron productos.
             </div>
         </div>
       </div>
     </div>
   `,
-  styles: []
+  styleUrls: ['./shop.component.scss']
 })
 export class ShopComponent implements OnInit {
   selectedCategory: string | null = null;
    designers: string[] = []; // Array para almacenar los diseñadores
+   filterStates: { [key: string]: boolean } = { // Propiedad para controlar el estado de los filtros
+    department: true, // Expandido por defecto
+    category: true, // Expandido por defecto
+    size: true, // Expandido por defecto
+    designers: true, // Expandido por defecto
+    price: true // Expandido por defecto
+  };
 
   // Inicialmente, la lista de productos estará vacía y se llenará con los resultados de la API
   products: any[] = []; // Cambiado a any[] para flexibilidad con la API
@@ -236,6 +294,16 @@ export class ShopComponent implements OnInit {
      console.log('Añadir diseñador a favoritos:', designerName);
      // Podrías tener un método addFavoriteDesigner en FavoriteService
      // this.favoriteService.addFavoriteDesigner(designerName);
+  }
+
+  // Método para alternar la expansión de un filtro
+  toggleFilter(filterName: string): void {
+    this.filterStates[filterName] = !this.filterStates[filterName];
+  }
+
+  // Método para verificar si un filtro está expandido
+  isFilterExpanded(filterName: string): boolean {
+    return !!this.filterStates[filterName];
   }
 
    // Función helper para calcular "hace cuánto tiempo"
