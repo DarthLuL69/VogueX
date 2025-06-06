@@ -1,86 +1,133 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  listedDate: Date;
-}
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '../../services/api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sell',
-  standalone: true,
-   imports: [CommonModule], 
   templateUrl: './sell.component.html',
   styleUrls: ['./sell.component.scss']
 })
-export class SellComponent {
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Designer Jacket',
-      description: 'Stylish black leather jacket, barely used.',
-      price: 299,
-      imageUrl: 'https://placehold.co/200x200/000/fff?text=Jacket',
-      listedDate: new Date('2023-03-01')
-    },
-    {
-      id: 2,
-      name: 'Vintage Watch',
-      description: 'Classic wristwatch with leather strap.',
-      price: 150,
-      imageUrl: 'https://placehold.co/200x200/333/fff?text=Watch',
-      listedDate: new Date('2022-12-15')
-    },
-    // Agrega más productos si quieres
-  ];
+export class SellComponent implements OnInit {
+  productForm: FormGroup;
+  categories: any[] = [];
+  selectedCategory: any;
+  imagePreviews: string[] = [];
+  selectedFiles: File[] = [];
+  
+  // Tallas disponibles según el tipo
+  numericSizes = ['36', '38', '40', '42', '44', '46', '48', '50', '52'];
+  standardSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  shoeSizes = ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46'];
 
-  favorites = new Set<number>(); // Guarda los IDs de productos favoritos
+  // Control de imágenes requeridas
+  hasFrontImage = false;
+  hasBackImage = false;
+  hasTagImage = false;
+  hasBottomImage = false;
 
-  // Cambia el estado de favorito de un producto
-  toggleFavorite(product: Product) {
-    if (this.favorites.has(product.id)) {
-      this.favorites.delete(product.id);
-    } else {
-      this.favorites.add(product.id);
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private router: Router
+  ) {
+    this.productForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      category_id: ['', Validators.required],
+      price: ['', [Validators.required, Validators.min(0)]],
+      size: ['', Validators.required],
+      condition: ['', Validators.required],
+      description: ['', [Validators.required, Validators.minLength(10)]],
+      damages: [''],
+      images: [[], [Validators.required, Validators.minLength(6)]]
+    });
+  }
+
+  ngOnInit() {
+    this.loadCategories();
+    
+    // Suscribirse a cambios en la categoría para actualizar las tallas
+    this.productForm.get('category_id')?.valueChanges.subscribe(categoryId => {
+      this.selectedCategory = this.categories.find(c => c.id === categoryId);
+      this.productForm.get('size')?.setValue('');
+    });
+  }
+
+  loadCategories() {
+    this.apiService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    });
+  }
+
+  onImageSelect(event: any) {
+    const files = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        if (this.imagePreviews.length >= 6) break;
+        
+        const file = files[i];
+        const reader = new FileReader();
+        
+        reader.onload = (e: any) => {
+          this.imagePreviews.push(e.target.result);
+          this.selectedFiles.push(file);
+        };
+        
+        reader.readAsDataURL(file);
+      }
     }
   }
 
-  // Comprueba si un producto está marcado como favorito
-  isFavorite(product: Product): boolean {
-    return this.favorites.has(product.id);
+  removeImage(index: number) {
+    this.imagePreviews.splice(index, 1);
+    this.selectedFiles.splice(index, 1);
+    this.updateImageRequirements();
   }
 
-  // Calcula cuánto tiempo lleva listado el producto (días, meses o años)
-  getTimeListed(date: Date): string {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  updateImageRequirements() {
+    // Aquí implementarías la lógica para detectar qué tipo de imagen es cada una
+    // Por ahora, asumimos que las imágenes se suben en orden
+    this.hasFrontImage = this.imagePreviews.length > 0;
+    this.hasBackImage = this.imagePreviews.length > 1;
+    this.hasTagImage = this.imagePreviews.length > 2;
+    this.hasBottomImage = this.imagePreviews.length > 3;
+  }
 
-    if (diffDays < 30) {
-      return `${diffDays} day(s) ago`;
-    } else if (diffDays < 365) {
-      const months = Math.floor(diffDays / 30);
-      return `${months} month(s) ago`;
-    } else {
-      const years = Math.floor(diffDays / 365);
-      return `${years} year(s) ago`;
+  isImageRequirementsMet(): boolean {
+    return this.imagePreviews.length >= 6 &&
+           this.hasFrontImage &&
+           this.hasBackImage &&
+           this.hasTagImage &&
+           this.hasBottomImage;
+  }
+
+  async onSubmit() {
+    if (this.productForm.valid && this.isImageRequirementsMet()) {
+      const formData = new FormData();
+      
+      // Agregar datos del formulario
+      Object.keys(this.productForm.value).forEach(key => {
+        if (key !== 'images') {
+          formData.append(key, this.productForm.value[key]);
+        }
+      });
+      
+      // Agregar imágenes
+      this.selectedFiles.forEach((file, index) => {
+        formData.append(`images[${index}]`, file);
+      });
+      
+      try {
+        const response = await this.apiService.createProduct(formData).toPromise();
+        this.router.navigate(['/profile']);
+      } catch (error) {
+        console.error('Error al crear el producto:', error);
+      }
     }
-  }
-
-  // Evento para cuando el usuario pide bajar el precio
-  onPriceDrop(product: Product) {
-    alert(`Request price drop for ${product.name}`);
-    // Aquí puedes añadir la lógica que quieras para esta función
-  }
-
-  // Evento para cuando el usuario envía una oferta
-  onSendOffer(product: Product) {
-    alert(`Send offer for ${product.name}`);
-    // Aquí puedes añadir la lógica que quieras para esta función
   }
 }

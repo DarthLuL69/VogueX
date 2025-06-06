@@ -50,6 +50,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/product-details/product-details.component').then(m => m.ProductDetailsComponent)
   },
   {
+    path: 'new-listing',
+    loadComponent: () => import('./features/new-listing/new-listing.component').then(m => m.NewListingComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

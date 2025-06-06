@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { GrailedApiService } from '../../services/grailed-api.service';
@@ -9,12 +9,12 @@ import { HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, HttpClientModule],
   template: `
     <div class="bg-white border-b">
       <div class="container mx-auto flex items-center justify-between py-4 px-4">
-        <!-- Logo vacío -->
-        <div class="w-32 h-10 bg-gray-200"></div>
+        <!-- Logo -->
+        <img src="" alt="Logo de VogueX" class="w-32 h-10 object-contain">
         <!-- Buscador -->
         <div class="flex-1 mx-8 relative">
           <input type="text" placeholder="Search..." class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none" [formControl]="searchControl">
